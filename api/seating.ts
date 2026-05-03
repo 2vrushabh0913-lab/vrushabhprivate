@@ -1,4 +1,3 @@
-
 import connectDB from '../lib/db';
 import SeatingArrangement from '../models/SeatingArrangement';
 
@@ -7,7 +6,7 @@ export default async function handler(req: any, res: any) {
 
   if (req.method === 'GET') {
     try {
-      const doc = await SeatingArrangement.findOne().sort({ updatedAt: -1 });
+      const doc = await (SeatingArrangement as any).findOne().sort({ updatedAt: -1 });
       if (!doc) {
         return res.json({ arrangements: [], sessionName: "External Examination 2026" });
       }
@@ -20,9 +19,13 @@ export default async function handler(req: any, res: any) {
   if (req.method === 'POST') {
     try {
       const { arrangements, sessionName } = req.body;
-      await SeatingArrangement.findOneAndUpdate(
+      await (SeatingArrangement as any).findOneAndUpdate(
         {},
-        { arrangements: arrangements || [], sessionName: sessionName || "External Examination 2026", updatedAt: Date.now() },
+        { 
+          arrangements: arrangements || [], 
+          sessionName: sessionName || "External Examination 2026", 
+          updatedAt: Date.now() 
+        },
         { upsert: true, new: true }
       );
       return res.json({ success: true });
